@@ -6,29 +6,32 @@ import {
   ListRenderItemInfo
 } from "react-native";
 import { Asset } from "expo-media-library";
-import { ListItem, Avatar } from "react-native-elements";
+import { List, Avatar, Divider, TouchableRipple } from "react-native-paper";
 import { format } from "date-fns";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { usePhotoGallery } from "../hooks";
 import { environment } from "@environment";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
-const renderThumbnail = (item: Asset) => <Avatar source={{ uri: item.uri }} />;
+const renderThumbnail = (item: Asset) => (
+  <Avatar.Image source={{ uri: item.uri }} />
+);
 const renderPhoto = (nav: GalleryScreenNavProp) => ({
   item
 }: ListRenderItemInfo<Asset>) => {
   return (
-    <TouchableOpacity
-      onPress={() => nav.navigate("Photo", { photoId: item.id })}
-    >
-      <ListItem
-        leftAvatar={renderThumbnail(item)}
-        title={item.filename}
-        subtitle={format(item.creationTime, "dd-MM-yyyy HH:mm")}
-        bottomDivider
-      />
-    </TouchableOpacity>
+    <React.Fragment>
+      <TouchableRipple
+        onPress={() => nav.navigate("Photo", { photoId: item.id })}
+      >
+        <List.Item
+          left={() => renderThumbnail(item)}
+          title={item.filename}
+          description={format(item.creationTime, "dd-MM-yyyy HH:mm")}
+        />
+      </TouchableRipple>
+      <Divider inset />
+    </React.Fragment>
   );
 };
 

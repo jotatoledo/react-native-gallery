@@ -3,11 +3,9 @@ import {
   SafeAreaView,
   View,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  ActivityIndicator
+  Image
 } from "react-native";
-import { Image } from "react-native-elements";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { AssetInfo } from "expo-media-library";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -45,11 +43,7 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
   return (
     <SafeAreaView style={style.wrapper}>
       <View style={style.image_container}>
-        <Image
-          source={{ uri: photo?.uri }}
-          style={style.image}
-          PlaceholderContent={<ActivityIndicator />}
-        />
+        <Image source={{ uri: photo?.uri }} style={style.image} />
       </View>
       <View style={style.footer}>
         <TouchableOpacity onPress={openShareDialog}>

@@ -7,6 +7,7 @@ import {
   MaterialIcons
 } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { IconButton, Colors } from "react-native-paper";
 
 import { usePhotoGallery } from "../hooks";
 import { environment } from "@environment";
