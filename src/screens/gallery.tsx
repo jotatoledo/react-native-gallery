@@ -6,13 +6,21 @@ import {
   ListRenderItemInfo
 } from "react-native";
 import { Asset } from "expo-media-library";
-import { List, Avatar, Divider, TouchableRipple } from "react-native-paper";
+import {
+  List,
+  Avatar,
+  Divider,
+  TouchableRipple,
+  ActivityIndicator,
+  Colors
+} from "react-native-paper";
 import { format } from "date-fns";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { usePhotoGallery } from "../hooks";
 import { environment } from "@environment";
 import { RootStackParamList } from "../Router";
+import { EmptyGallery } from "../components";
 
 const renderThumbnail = (item: Asset) => (
   <Avatar.Image source={{ uri: item.uri }} />
@@ -46,7 +54,7 @@ export const GalleryScreen: FunctionComponent<GalleryScreenProps> = ({
   navigation
 }) => {
   const { loadPhotos } = usePhotoGallery(environment.mediaAlbumName);
-  const [photos, setPhotos] = useState<Asset[]>([]);
+  const [photos, setPhotos] = useState<Asset[]>(null);
 
   useEffect(
     () =>
@@ -63,10 +71,19 @@ export const GalleryScreen: FunctionComponent<GalleryScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={photos}
-        keyExtractor={item => item.id}
-        renderItem={renderPhotoNav}
+      {photos != null && (
+        <FlatList
+          data={photos}
+          keyExtractor={item => item.id}
+          renderItem={renderPhotoNav}
+          ListEmptyComponent={EmptyGallery}
+        />
+      )}
+      <ActivityIndicator
+        style={styles.spinner}
+        size="large"
+        animating={photos === null}
+        color={Colors.red800}
       />
     </SafeAreaView>
   );
@@ -75,5 +92,8 @@ export const GalleryScreen: FunctionComponent<GalleryScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  spinner: {
+    alignSelf: "center"
   }
 });
