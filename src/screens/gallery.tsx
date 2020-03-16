@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -10,6 +10,10 @@ import { Asset } from "expo-media-library";
 import { Header, Text, ListItem, Avatar } from "react-native-elements";
 import { MaterialIcons } from "@expo/vector-icons";
 import { format } from "date-fns";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+import { usePhotoGallery } from "../hooks";
+import { environment } from "@environment";
 
 const renderThumbnail = (item: Asset) => <Avatar source={{ uri: item.uri }} />;
 const renderPhoto = ({ item }: ListRenderItemInfo<Asset>) => {
@@ -22,28 +26,29 @@ const renderPhoto = ({ item }: ListRenderItemInfo<Asset>) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  header_icon: {
-    fontSize: 36
-  }
-});
+type GalleryScreenNavProp = StackNavigationProp<any, "Gallery">;
 
-type GalleryProps = {
-  photos: Asset[];
-  onBackPress: () => void;
+type GalleryScreenProps = {
+  navigation: GalleryScreenNavProp;
 };
 
-export const Gallery: FunctionComponent<GalleryProps> = ({
-  onBackPress,
-  photos
+export const GalleryScreen: FunctionComponent<GalleryScreenProps> = ({
+  navigation
 }) => {
+  const { loadPhotos } = usePhotoGallery(environment.mediaAlbumName);
+  const [photos, setPhotos] = useState<Asset[]>([]);
+
+  useEffect(() => {
+    loadPhotos(20)
+      .then(res => res.assets)
+      .catch(_ => [])
+      .then(setPhotos);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Header>
-        <TouchableOpacity onPress={onBackPress}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialIcons name="chevron-left" style={styles.header_icon} />
         </TouchableOpacity>
         <Text>React Native Gallery</Text>
@@ -56,3 +61,12 @@ export const Gallery: FunctionComponent<GalleryProps> = ({
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  header_icon: {
+    fontSize: 36
+  }
+});
