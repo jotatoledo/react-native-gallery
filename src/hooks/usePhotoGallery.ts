@@ -6,8 +6,8 @@ import {
   getAssetsAsync,
   createAssetAsync,
   getAlbumAsync,
-  Album,
-  SortBy
+  SortBy,
+  getAssetInfoAsync
 } from "expo-media-library";
 
 export interface Photo {
@@ -20,7 +20,6 @@ export interface Photo {
 export function usePhotoGallery(albumName: string) {
   const [cameraRollGrant, setCameraRollGrant] = useState<boolean | null>(null);
   const [cameraGrant, setCameraGrant] = useState<boolean | null>(null);
-  const [, setAlbum] = useState<Album>(null);
 
   const requestGrants = () => {
     Promise.all([
@@ -36,6 +35,10 @@ export function usePhotoGallery(albumName: string) {
     requestGrants();
   }, []);
 
+  const loadPhoto = (id: string) =>
+    getAlbumAsync(albumName).then(album =>
+      !album ? Promise.reject("Album not created") : getAssetInfoAsync(id)
+    );
   const loadPhotos = (size?: number, after?: string) =>
     getAlbumAsync(albumName).then(album =>
       !album
@@ -63,6 +66,7 @@ export function usePhotoGallery(albumName: string) {
     granted: cameraRollGrant && cameraGrant,
     requestGrants,
     loadPhotos,
+    loadPhoto,
     takePhoto
   };
 }
