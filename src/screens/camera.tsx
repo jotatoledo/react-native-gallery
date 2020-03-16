@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import { Camera } from "expo-camera";
 import { View, TouchableOpacity, StyleSheet, StatusBar } from "react-native";
 import {
@@ -7,10 +7,10 @@ import {
   MaterialIcons
 } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { IconButton, Colors } from "react-native-paper";
 
 import { usePhotoGallery } from "../hooks";
 import { environment } from "@environment";
+import { useDeletedPhotoNotification } from "../components";
 
 type CameraScreenNavProp = StackNavigationProp<any, "Camera">;
 
@@ -21,6 +21,7 @@ type CameraScreenProps = {
 export const CameraScreen: FunctionComponent<CameraScreenProps> = ({
   navigation
 }) => {
+  const { dismiss } = useDeletedPhotoNotification();
   const { takePhoto } = usePhotoGallery(environment.mediaAlbumName);
   const [type, setType] = useState<string>(Camera.Constants.Type.back);
   const [camera, setCamera] = useState<Camera>(null);
@@ -31,6 +32,8 @@ export const CameraScreen: FunctionComponent<CameraScreenProps> = ({
         ? Camera.Constants.Type.front
         : Camera.Constants.Type.back
     );
+  useEffect(() => navigation.addListener("focus", dismiss), [navigation]);
+
   return (
     <React.Fragment>
       <StatusBar hidden />

@@ -9,11 +9,13 @@ import {
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { AssetInfo } from "expo-media-library";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Portal, Dialog, Paragraph, Button } from "react-native-paper";
 import * as Sharing from "expo-sharing";
 
 import { RootStackParamList } from "../Router";
 import { usePhotoGallery } from "../hooks";
 import { environment } from "@environment";
+import { useDeletedPhotoNotification } from "../components";
 
 type PhotoScreenNavProp = NavigationProp<RootStackParamList, "Photo">;
 type PhotoScreenRouteProp = RouteProp<RootStackParamList, "Photo">;
@@ -23,9 +25,14 @@ type PhotoScreenProps = {
   route: PhotoScreenRouteProp;
 };
 
-export function PhotoScreen({ route }: PhotoScreenProps) {
-  const { loadPhoto } = usePhotoGallery(environment.mediaAlbumName);
+export function PhotoScreen({ route, navigation }: PhotoScreenProps) {
+  const { loadPhoto, removePhoto } = usePhotoGallery(
+    environment.mediaAlbumName
+  );
   const [photo, setPhoto] = useState<AssetInfo>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { notify, dismiss } = useDeletedPhotoNotification();
+
   const { photoId } = route.params;
   const openShareDialog = async () => {
     if (!(await Sharing.isAvailableAsync())) {
@@ -34,12 +41,21 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
       await Sharing.shareAsync(photo.uri);
     }
   };
+  const confirmdelete = () => setIsDeleteDialogOpen(true);
+  const cancelDelete = () => setIsDeleteDialogOpen(false);
+  const deletePhoto = () =>
+    removePhoto(photo.id).then(_ => {
+      notify(photo);
+      navigation.goBack();
+    });
 
   useEffect(() => {
     if (photoId) {
       loadPhoto(photoId).then(setPhoto);
     }
   }, [photoId, route]);
+  useEffect(() => navigation.addListener("focus", dismiss), [navigation]);
+
   return (
     <SafeAreaView style={style.wrapper}>
       <View style={style.image_container}>
@@ -52,13 +68,24 @@ export function PhotoScreen({ route }: PhotoScreenProps) {
         <TouchableOpacity>
           <MaterialIcons name="favorite-border" style={style.button_icon} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={confirmdelete}>
           <MaterialCommunityIcons
             name="delete-outline"
             style={style.button_icon}
           />
         </TouchableOpacity>
       </View>
+      <Portal>
+        <Dialog visible={isDeleteDialogOpen} onDismiss={cancelDelete}>
+          <Dialog.Content>
+            <Paragraph>Delete the picture '{photo?.filename}'?</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={cancelDelete}>Cancel</Button>
+            <Button onPress={deletePhoto}>Delete</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </SafeAreaView>
   );
 }

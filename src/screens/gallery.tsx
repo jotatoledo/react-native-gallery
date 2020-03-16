@@ -12,6 +12,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import { usePhotoGallery } from "../hooks";
 import { environment } from "@environment";
+import { RootStackParamList } from "../Router";
 
 const renderThumbnail = (item: Asset) => (
   <Avatar.Image source={{ uri: item.uri }} />
@@ -35,7 +36,7 @@ const renderPhoto = (nav: GalleryScreenNavProp) => ({
   );
 };
 
-type GalleryScreenNavProp = StackNavigationProp<any, "Gallery">;
+type GalleryScreenNavProp = StackNavigationProp<RootStackParamList, "Gallery">;
 
 type GalleryScreenProps = {
   navigation: GalleryScreenNavProp;
@@ -47,12 +48,17 @@ export const GalleryScreen: FunctionComponent<GalleryScreenProps> = ({
   const { loadPhotos } = usePhotoGallery(environment.mediaAlbumName);
   const [photos, setPhotos] = useState<Asset[]>([]);
 
-  useEffect(() => {
-    loadPhotos(20)
-      .then(res => res.assets)
-      .catch(_ => [])
-      .then(setPhotos);
-  }, []);
+  useEffect(
+    () =>
+      navigation.addListener("focus", () => {
+        loadPhotos(20)
+          .then(res => res.assets)
+          .catch(_ => [])
+          .then(setPhotos);
+      }),
+    [navigation]
+  );
+
   const renderPhotoNav = renderPhoto(navigation);
 
   return (

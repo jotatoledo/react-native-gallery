@@ -7,7 +7,8 @@ import {
   createAssetAsync,
   getAlbumAsync,
   SortBy,
-  getAssetInfoAsync
+  getAssetInfoAsync,
+  deleteAssetsAsync
 } from "expo-media-library";
 
 export interface Photo {
@@ -35,6 +36,7 @@ export function usePhotoGallery(albumName: string) {
     requestGrants();
   }, []);
 
+  const removePhoto = (id: string) => deleteAssetsAsync(id);
   const loadPhoto = (id: string) =>
     getAlbumAsync(albumName).then(album =>
       !album ? Promise.reject("Album not created") : getAssetInfoAsync(id)
@@ -67,6 +69,7 @@ export function usePhotoGallery(albumName: string) {
     requestGrants,
     loadPhotos,
     loadPhoto,
-    takePhoto
+    takePhoto,
+    removePhoto
   };
 }
