@@ -18,7 +18,13 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "com.jotatoledo.reactnativegallery",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.jotatoledo.reactnativegallery",
+      "versionCode": 1
     }
   }
 }
