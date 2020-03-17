@@ -6,7 +6,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "format": "prettier --config ./.prettierrc -c **/*.{tsx,ts,js,json,md}",
+    "lint:ts": "tsc --noEmit && eslint */**/*.{js,ts,tsx} --quiet --fix"
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.5",
@@ -32,8 +34,14 @@
     "@babel/core": "^7.0.0",
     "@types/react": "~16.9.0",
     "@types/react-native": "~0.60.23",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
     "babel-preset-expo": "~8.0.0",
-    "typescript": "~3.6.3"
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-react": "^7.19.0",
+    "prettier": "^1.19.1",
+    "typescript": "~3.7.0"
   },
   "private": true
 }

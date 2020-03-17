@@ -1,3 +1,3 @@
 export const environment = {
-  mediaAlbumName: "ReactNativeGallery"
+  mediaAlbumName: 'ReactNativeGallery'
 };

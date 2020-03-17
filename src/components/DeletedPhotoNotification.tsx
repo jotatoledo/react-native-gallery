@@ -1,6 +1,6 @@
-import React, { useState, FunctionComponent, useContext } from "react";
-import { Portal, Snackbar } from "react-native-paper";
-import { Asset } from "expo-media-library";
+import React, { useState, FunctionComponent, useContext } from 'react';
+import { Portal, Snackbar } from 'react-native-paper';
+import { Asset } from 'expo-media-library';
 
 type ContextProps = {
   notify: (v: Asset) => void;
@@ -9,9 +9,7 @@ type ContextProps = {
 
 const DeletedPhotoContext = React.createContext<ContextProps>(undefined);
 
-export const DeletedPhotoNotificationProvider: FunctionComponent = ({
-  children
-}) => {
+export const DeletedPhotoNotificationProvider: FunctionComponent = ({ children }) => {
   const [isOpen, setOpen] = useState(false);
   const dismiss = () => setOpen(false);
   const notify = (v: Asset) => setOpen(true);
@@ -25,7 +23,7 @@ export const DeletedPhotoNotificationProvider: FunctionComponent = ({
           visible={isOpen}
           onDismiss={dismiss}
           action={{
-            label: "Dismiss",
+            label: 'Dismiss',
             onPress: dismiss
           }}
         >

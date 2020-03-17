@@ -1,5 +1,5 @@
-import { Camera } from "expo-camera";
-import { useEffect, useState } from "react";
+import { Camera } from 'expo-camera';
+import { useEffect, useState } from 'react';
 import {
   createAlbumAsync,
   requestPermissionsAsync,
@@ -9,7 +9,7 @@ import {
   SortBy,
   getAssetInfoAsync,
   deleteAssetsAsync
-} from "expo-media-library";
+} from 'expo-media-library';
 
 export interface Photo {
   uri: string;
@@ -38,13 +38,11 @@ export function usePhotoGallery(albumName: string) {
 
   const removePhoto = (id: string) => deleteAssetsAsync(id);
   const loadPhoto = (id: string) =>
-    getAlbumAsync(albumName).then(album =>
-      !album ? Promise.reject("Album not created") : getAssetInfoAsync(id)
-    );
+    getAlbumAsync(albumName).then(album => (!album ? Promise.reject('Album not created') : getAssetInfoAsync(id)));
   const loadPhotos = (size?: number, after?: string) =>
     getAlbumAsync(albumName).then(album =>
       !album
-        ? Promise.reject("Album not created")
+        ? Promise.reject('Album not created')
         : getAssetsAsync({
             album,
             first: size,
@@ -58,9 +56,7 @@ export function usePhotoGallery(albumName: string) {
     });
     const asset = await createAssetAsync(uri)
       .then(a => createAlbumAsync(albumName, a, false))
-      .then(album =>
-        getAssetsAsync({ album, first: 1, sortBy: SortBy.creationTime })
-      )
+      .then(album => getAssetsAsync({ album, first: 1, sortBy: SortBy.creationTime }))
       .then(res => res.assets[0]);
     return asset;
   };

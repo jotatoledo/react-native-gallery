@@ -1,2 +1,2 @@
-export * from "./DeletedPhotoNotification";
-export * from "./EmptyGallery";
+export * from './DeletedPhotoNotification';
+export * from './EmptyGallery';
